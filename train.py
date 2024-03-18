@@ -1,7 +1,7 @@
 # Import dependencies
 import torch
 from torchvision import datasets
-from PIL import Image
+from tqdm import tqdm
 from torch import nn, save, load
 from torch.optim import Adam
 from torch.utils.data import Dataset, DataLoader
@@ -36,7 +36,7 @@ def train_model():
     train_loss = 0.0
     clf.train()
 
-    for batch in train_loader:
+    for batch in tqdm(train_loader, ncols=80, desc='Training'):
         # Set the gradients to zero before starting backpropagation
         optimizer.zero_grad()
 
@@ -72,7 +72,7 @@ def validate_model():
     valid_loss = 0.0
 
     with torch.no_grad():
-        for batch in valid_loader:  # valid_loader
+        for batch in tqdm(valid_loader, ncols=80, desc='Testing'):  # valid_loader
 
             # Get a batch
             X, y = batch  # X: train, y = label
