@@ -26,3 +26,6 @@ Valid data:
 7. transforms
 8. ToTensor, Resize
 9. numpy
+
+### Download dataset
+https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/download?datasetVersionNumber=2
