@@ -22,12 +22,20 @@ https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/down
 <img width="1104" alt="image" src="https://github.com/thinhdoanvu/Image-Classification/assets/22977443/18266de1-f53c-4f56-a3db-623b1b4acf1b">
 
 The classify model has been loaded.
+
 Image: 01.jpg, Predicted label: ace of clubs
+
 Image: 02.jpg, Predicted label: eight of clubs
+
 Image: 03.jpg, Predicted label: five of hearts
+
 Image: 04.jpg, Predicted label: jack of hearts
+
 Image: 05.jpg, Predicted label: jack of hearts
+
 Image: 1.jpg, Predicted label: joker
+
 Image: 3.jpg, Predicted label: king of clubs
+
 Image: 4.jpg, Predicted label: four of clubs
 
