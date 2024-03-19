@@ -30,7 +30,7 @@ Valid data:
 ### Download dataset
 https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/download?datasetVersionNumber=2
 
-### Testing
+### Testing with test folder
 <img width="1104" alt="image" src="https://github.com/thinhdoanvu/Image-Classification/assets/22977443/18266de1-f53c-4f56-a3db-623b1b4acf1b">
 
 The classify model has been loaded.
