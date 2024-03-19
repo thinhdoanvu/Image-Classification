@@ -15,18 +15,6 @@ Valid data:
 
 ![image](https://github.com/thinhdoanvu/Image-Classification/assets/22977443/fa277613-29b8-461b-9b84-412d3cb19db9)
 
-
-### Import dependencies
-1. Pytorch
-2. datasets library
-3. Neural network, load and save files
-4. Optimizer
-5. Dataset, DataLoader
-6. ImageFolder
-7. transforms
-8. ToTensor, Resize
-9. numpy
-
 ### Download dataset
 https://www.kaggle.com/datasets/gpiosenka/cards-image-datasetclassification/download?datasetVersionNumber=2
 
