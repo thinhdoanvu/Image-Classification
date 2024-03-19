@@ -13,7 +13,7 @@ import numpy as np
 ############################Definine Functions##########################
 train_data = './data/train'
 valid_data = './data/valid'
-n_epoch = 10
+n_epoch = 100
 
 # Setup CUDA
 def setup_cuda():
@@ -57,9 +57,9 @@ def train_model():
         optimizer.step()
 
         # Accumulate the batch loss
-        train_loss += loss.item()
-
-    print(f"Epoch:{epoch} train loss is {loss.item()}")
+        train_loss = loss.item()
+    
+    #print("Epoch:{} train loss is {:.4f}".format(epoch,train_loss))
     return train_loss
 
 
@@ -72,7 +72,7 @@ def validate_model():
     valid_loss = 0.0
 
     with torch.no_grad():
-        for batch in tqdm(valid_loader, ncols=80, desc='Testing'):  # valid_loader
+        for batch in tqdm(valid_loader, ncols=80, desc='Valid'):  # valid_loader
 
             # Get a batch
             X, y = batch  # X: train, y = label
@@ -85,10 +85,10 @@ def validate_model():
             loss = loss_fn(logits, y)  # y:label
 
             # Accumulate the batch loss
-            valid_loss += loss.item()
+            valid_loss = loss.item()
 
             # return valid_loss #valid loader
-        print(f"Epoch:{epoch} valid loss is {loss.item()}")
+        #print("Epoch:{} valid loss is {:.4f}".format(epoch,valid_loss))
         return valid_loss
 
 
@@ -101,7 +101,7 @@ if __name__ == "__main__":
     train_dataset = Getdataset(train_data, transform=transform)
     train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
     valid_dataset = Getdataset(valid_data, transform=transform)
-    valid_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
+    valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=True)
 
     # 2. Create a segmentation model
     import torchvision.models as models
@@ -114,34 +114,15 @@ if __name__ == "__main__":
     # 4. Training flow
     for epoch in range(n_epoch):  # train for n_epoch
         # 5.1. Train the model over a single epoch
-        train_model()
+        train_perf = train_model()
+        #train_model()
 
         # 5.2. Validate the model
-        validate_model()
+        valid_perf = validate_model()
+        #validate_model()
+        
+        print("Epoch:{} training loss is {:.4f}".format(epoch,train_perf))
+        print("Epoch:{} valid loss is {:.4f}".format(epoch,valid_perf))
 
         with open('model_state.pt', 'wb') as f:
             save(clf.state_dict(), f)
-
-    # predict
-    with open('model_state.pt', 'rb') as f:
-        clf.load_state_dict(load(f))
-
-    img = Image.open('1.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('2.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('3.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('4.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('5.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
