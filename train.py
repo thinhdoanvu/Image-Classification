@@ -9,11 +9,12 @@ from torchvision.datasets import ImageFolder
 import torchvision.transforms as transforms
 from torchvision.transforms import ToTensor, Resize
 import numpy as np
+from PIL import Image
 
 ############################Definine Functions##########################
 train_data = './data/train'
 valid_data = './data/valid'
-n_epoch = 100
+n_epoch = 5
 
 # Setup CUDA
 def setup_cuda():
@@ -126,3 +127,28 @@ if __name__ == "__main__":
 
         with open('model_state.pt', 'wb') as f:
             save(clf.state_dict(), f)
+            
+            
+# predict
+    # with open('model_state.pt', 'rb') as f:
+    #     clf.load_state_dict(load(f))
+
+    # img = Image.open('01.jpg')
+    # img_tensor = ToTensor()(img).unsqueeze(0).to(device)
+    # print(torch.argmax(clf(img_tensor)))
+
+    # img = Image.open('02.jpg')
+    # img_tensor = ToTensor()(img).unsqueeze(0).to(device)
+    # print(torch.argmax(clf(img_tensor)))
+
+    # img = Image.open('03.jpg')
+    # img_tensor = ToTensor()(img).unsqueeze(0).to(device)
+    # print(torch.argmax(clf(img_tensor)))
+
+    # img = Image.open('04.jpg')
+    # img_tensor = ToTensor()(img).unsqueeze(0).to(device)
+    # print(torch.argmax(clf(img_tensor)))
+
+    # img = Image.open('05.jpg')
+    # img_tensor = ToTensor()(img).unsqueeze(0).to(device)
+    # print(torch.argmax(clf(img_tensor)))
