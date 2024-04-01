@@ -111,16 +111,7 @@ if __name__ == "__main__":
     num_class=53
 
     #without pretrain weight
-    #from utils.alexnetmodel import ImageClassifier
-    #clf = ImageClassifier(num_class).to(device)
-
-    #with pretrain weight
-    # 1. Load pre-trained weights
-    pretrained_resnet = models.resnet18(pretrained=True)
     from utils.alexnetmodel import ImageClassifier
-    clf = ImageClassifier(num_class)
-    clf.conv1.weight.data = pretrained_resnet.conv1.weight.data
-    clf.fc.weight.data = pretrained_resnet.fc.weight.data
     clf = ImageClassifier(num_class).to(device)
 
     # 3. Specify loss function and optimizer
