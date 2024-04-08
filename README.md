@@ -262,3 +262,4 @@ Epoch:49 valid loss is 0.0000
 
 ## without pretrain weight: 
 outputs folder
+![pretrained_weights_epoch_99](https://github.com/thinhdoanvu/Image-Classification/assets/22977443/269f14ed-0e1b-449a-9e66-762d93e2dfb2)
