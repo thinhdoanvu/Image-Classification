@@ -254,6 +254,11 @@ Epoch:48 valid loss is 0.0000
 Training: 100%|███████████████████████████████| 239/239 [00:47<00:00
 Valid: 100%|██████████████████████████████████| 239/239 [00:18<00:00
 Epoch:49 training loss is 0.0021
-Epoch:49 valid loss is 0.0000![Uploading image.png…]()
+Epoch:49 valid loss is 0.0000
 
+# Pretrain weights
+## imagenet18:
+![pretrained_weights_resnet18_imagenet](https://github.com/thinhdoanvu/Image-Classification/assets/22977443/2d452b4f-c49c-4b8c-b806-279f52a8b362)
 
+## without pretrain weight: 
+outputs folder
