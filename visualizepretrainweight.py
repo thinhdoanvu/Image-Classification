@@ -45,16 +45,16 @@ for i, ax in enumerate(axes.flatten()):
     enhanced_image = conv1_weights_numpy.copy()
 
     # Tăng cường màu đỏ (chỉ tăng giá trị của kênh màu đỏ)
-    enhanced_image[:, :, 0] = np.clip(3. * enhanced_image[:, :, 0], 0, 1)  # Tăng cường màu đỏ lên 3 lần
+    enhanced_image[:, :, 0] = np.clip(3. * enhanced_image[:, :, 0], 0, 1)  # Tăng cường màu đỏ lên 1.5 lần
 
     # Tăng cường màu xanh lá cây (chỉ tăng giá trị của kênh màu xanh lá cây)
-    enhanced_image[:, :, 1] = np.clip(3. * enhanced_image[:, :, 1], 0, 1)  # Tăng cường màu xanh lá cây lên 3 lần
+    enhanced_image[:, :, 1] = np.clip(3. * enhanced_image[:, :, 1], 0, 1)  # Tăng cường màu xanh lá cây lên 1.3 lần
 
     # Tăng cường màu xanh dương (chỉ tăng giá trị của kênh màu xanh dương)
-    enhanced_image[:, :, 2] = np.clip(3. * enhanced_image[:, :, 2], 0, 1)  # Tăng cường màu xanh dương lên 3 lần
+    enhanced_image[:, :, 2] = np.clip(3. * enhanced_image[:, :, 2], 0, 1)  # Tăng cường màu xanh dương lên 1.2 lần
 
     # Giảm giá trị của các kênh màu để tăng cường màu đen
-    black_factor = 0.7  # Giảm giá trị của các kênh màu xuống 70%
+    black_factor = 0.7  # Giảm giá trị của các kênh màu xuống 80%
     enhanced_image[:, :, :3] = np.clip(enhanced_image[:, :, :3] * black_factor, 0, 1)
 
     # Chuyển đổi trở lại sang định dạng uint8 và tạo hình ảnh từ mảng NumPy
