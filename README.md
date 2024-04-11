@@ -35,9 +35,10 @@ class index	filepaths	labels	card type	data set
 
 ### Testing with test folder
 
+![image](https://github.com/thinhdoanvu/Image-Classification/assets/22977443/042f2cc2-7822-4f20-a70d-4a947cac8413)
 
-#Train by alexnet model
-
+# Train by alexnet model
+![image](https://github.com/thinhdoanvu/Image-Classification/assets/22977443/e1124baf-1ec4-4fa0-a0be-3278fa3a6a50)
 
 
 # Pretrain weights
