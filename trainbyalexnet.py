@@ -14,7 +14,7 @@ from PIL import Image
 ############################Definine Functions##########################
 train_data = './data/train'
 valid_data = './data/valid'
-n_epoch = 3
+n_epoch = 50
 
 
 # Setup CUDA
@@ -108,10 +108,8 @@ if __name__ == "__main__":
     valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=True)
 
     # 2. Create a segmentation model
-    num_class=53
-
-    #without pretrain weight
     from utils.alexnetmodel import ImageClassifier
+    num_class=53
     clf = ImageClassifier(num_class).to(device)
 
     # 3. Specify loss function and optimizer
@@ -133,27 +131,3 @@ if __name__ == "__main__":
 
         with open('alexmodel_state.pt', 'wb') as f:
             save(clf.state_dict(), f)
-
-    # predict
-    with open('alexmodel_state.pt', 'rb') as f:
-        clf.load_state_dict(load(f))
-
-    img = Image.open('01.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('02.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('03.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('04.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))
-
-    img = Image.open('05.jpg')
-    img_tensor = ToTensor()(img).unsqueeze(0).to(device)
-    print(torch.argmax(clf(img_tensor)))

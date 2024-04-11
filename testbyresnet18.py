@@ -68,8 +68,11 @@ if __name__ == "__main__":
     import torchvision.models as models
 
     num_class = 53
-    clf = models.resnet18(weights=None).to(device)# or weights='IMAGENET1K_V1', weights='DEFAULT'
-    clf.load_state_dict(torch.load('model_resnet18_state.pt', device))
+    clf = models.resnet18(weights='DEFAULT').to(device)# or weights='IMAGENET1K_V1', weights=None
+
+    folder_path = 'checkpoint'  # Define the folder name
+    file_path = os.path.join(folder_path, 'resnet18_epoch_79_valoss_0.0006.pt')#lay epoch cuoi cung
+    clf.load_state_dict(torch.load(file_path, device))
     print('The classify model has been loaded.')
 
     # 3. Perform segmentation
