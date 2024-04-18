@@ -128,7 +128,7 @@ if __name__ == "__main__":
     # 2. Create a segmentation model
     import torchvision.models as models
 
-    clf = models.resnet18(weights='DEFAULT').to(device)  # or weights='IMAGENET1K_V1', weights=None
+    clf = models.resnet18(weights=None).to(device)
 
     # 3. Specify loss function and optimizer
     optimizer = Adam(clf.parameters(), lr=1e-3)
