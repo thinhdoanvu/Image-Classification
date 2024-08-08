@@ -1,0 +1,19 @@
+# Khi bạn gọi patches.flatten(2), điều này có nghĩa là:
+# Bạn giữ lại hai chiều đầu tiên (n và n_patches ** 2).
+# Các chiều còn lại (c, patch_size, patch_size) sẽ được gộp lại thành một chiều duy nhất.
+# Giả sử bạn có một tensor patches với kích thước (batch_size=2, n.patches=49, chanel=3, patch_size=4x4):
+# Khi bạn gọi patches.flatten(2), kích thước của tensor=(2, 49, 48), trong đó 48=3*4*4.
+
+# Step 1: Get feature maps from ConvStem
+feature_maps = conv_model(images)  # Output shape should be [batch_size, 256, 28, 28]
+print(f'feature map size after convstem', feature_maps.size())
+Output: torch.Size([batch_size, 256, 28, 28])
+Example with batch_size=2: torch.Size([2, 256, 28, 28])
+
+# Step 2: Convert feature maps to patches
+patches = patchify(feature_maps, n_patches=7)  # Convert feature maps to patches
+print(f'patches size', patches.shape)
+Output: torch.Size([batch_size, num_patches, patch_dim])
+Where num_patches = n_patches ** 2 = 7 ** 2 = 49
+patch_dim = c * patch_size * patch_size = 256 * 4 * 4 = 4096
+Example with batch_size=2: torch.Size([2, 49, 4096])
