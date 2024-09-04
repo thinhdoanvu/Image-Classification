@@ -18,7 +18,8 @@ __all__ = (
     "PositionalEmbedding", "MyMSA", "MyMLP", "Alexnet", "MyMHSA", "SAM", "CAM", "CBAM", "SEBlock", 
     "ECA", "MyAdd", "MyClassify", "MyClass", "Block1", "Block21", "Block31", "Block41", "Block51", 
     "Block22", "Block32", "Block42", "Block52", "Skip", "MyMHSA_v2", "MyESC", "h_sigmoid", "h_swish", 
-    "CoordAtt", "MyESCC", "MyESC2", "MyESC3", "C_Attention", "H_Attention", "W_Attention", "HWC", "HWC2"
+    "CoordAtt", "MyESCC", "MyESC2", "MyESC3", "C_Attention", "H_Attention", "W_Attention", "HWC", "HWC2",
+    "SpaceDownS", "CBS", "ScaleDotProduct", "Contigous_Att"
 )
 
 
