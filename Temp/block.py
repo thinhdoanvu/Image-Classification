@@ -19,7 +19,7 @@ __all__ = (
     "ECA", "MyAdd", "MyClassify", "MyClass", "Block1", "Block21", "Block31", "Block41", "Block51", 
     "Block22", "Block32", "Block42", "Block52", "Skip", "MyMHSA_v2", "MyESC", "h_sigmoid", "h_swish", 
     "CoordAtt", "MyESCC", "MyESC2", "MyESC3", "C_Attention", "H_Attention", "W_Attention", "HWC", "HWC2",
-    "SpaceDownS", "CBS", "ScaleDotProduct", "Contigous_Att"
+    "SpaceDownS", "CBS", "ScaleDotProduct", "Contigous_Att", "XYPoolingAttention"
 )
 
 
@@ -2111,27 +2111,27 @@ class SpaceDownS(nn.Module):    # Input CxHxW
         self.sl = nn.SiLU()
         
     def forward(self, x):
-        print("# Input Size: ", x.size())                   # B x C1 x H x W
+        # print("# Input Size: ", x.size())                   # B x C1 x H x W
         h_att = self.ha(x)                                  
-        print("# Height Output Size: ", h_att.size())       # B x C1 x H x 1
+        # print("# Height Output Size: ", h_att.size())       # B x C1 x H x 1
         w_att = self.wa(x)                                  
-        print("# Weight Output Size: ", w_att.size())       # B x C1 x 1 x W
+        # print("# Weight Output Size: ", w_att.size())       # B x C1 x 1 x W
         hw_att = x * h_att * w_att                             
-        print("# H*W Output Size: ", hw_att.size())         # B x C1 x H x W
+        # print("# H*W Output Size: ", hw_att.size())         # B x C1 x H x W
         
         mpl5 = self.mp5(x)
-        print("# MP5 Output Size: ", mpl5.size())           # B x C1 x H/2 x W/2
+        # print("# MP5 Output Size: ", mpl5.size())           # B x C1 x H/2 x W/2
         mpl9 = self.mp9(x)
-        print("# MP9 Output Size: ", mpl9.size())           # B x C1 x H/2 x W/2
+        # print("# MP9 Output Size: ", mpl9.size())           # B x C1 x H/2 x W/2
         mpl13 = self.mp13(x)
-        print("# MP13 Output Size: ", mpl13.size())         # B x C1 x H/2 x W/2
+        # print("# MP13 Output Size: ", mpl13.size())         # B x C1 x H/2 x W/2
         
         cat = torch.cat((mpl5,mpl9,mpl13),dim=1)
-        print("# CAT Output Size: ", cat.size())            # B x 3*C1 x H/2 x W/2
+        # print("# CAT Output Size: ", cat.size())            # B x 3*C1 x H/2 x W/2
         con = self.conv(cat)
-        print("# CONV Output Size: ", con.size())           # B x C2 x H/2 x W/2
+        # print("# CONV Output Size: ", con.size())           # B x C2 x H/2 x W/2
         spacedown = self.sl(self.bn(con))
-        print("# SPD Output Size: ", spacedown.size())      # B x C2 x H/2 x W/2
+        # print("# SPD Output Size: ", spacedown.size())      # B x C2 x H/2 x W/2
         return spacedown
 
 class ScaleDotProduct(nn.Module):    # Input CxHxW
@@ -2140,6 +2140,7 @@ class ScaleDotProduct(nn.Module):    # Input CxHxW
         self.ha = H_Attention(c1, c1)
         self.wa = W_Attention(c1, c1)
         self.ca = C_Attention(c2)
+        
         
     def forward(self, x):
         # print("# Input Size: ", x.size())                   # B x C1 x H x W
@@ -2155,8 +2156,13 @@ class ScaleDotProduct(nn.Module):    # Input CxHxW
         Q = h_att.view(BQ,CQ,HQ*WQ)
         # print("# Q Output Size: ", Q.size())                # B x C1 x H*W
         
-        BK,CK,HK,WK = w_att.size()
-        K = w_att.view(BK,CK,HK*WK)
+        # Interpolate w_att to have the same height and width as h_att
+        w_att = nn.functional.interpolate(w_att, size=(h_att.size(2), h_att.size(3)), mode='bilinear', align_corners=False)
+        
+        
+        # BK,CK,HK,WK = w_att.size()
+        # K = w_att.view(BK,CK,HK*WK)
+        K = w_att.view(BQ, CQ, HQ * WQ)
         # print("# K Output Size: ", K.size())                # B x C1 x H*W
         
         # Compute the attention scores by performing matrix multiplication of Q and K
@@ -2178,6 +2184,7 @@ class ScaleDotProduct(nn.Module):    # Input CxHxW
         # Multiply the attention weights with the value vector V
         BV,CV,HV,WV = c_att.size()
         V = c_att.view(BV,CV,HV*WV)
+        
         output = torch.bmm(attention_weights, V)    # Shape: [Batch, Channels, 1]
         # print("# Output Size: ", output.size())     # B x C1 x C1
 
@@ -2189,8 +2196,42 @@ class ScaleDotProduct(nn.Module):    # Input CxHxW
         output = x * output
         # print("# Final Reshape Size: ", output.size())     # B x C1 x H x W
         
-        return output   
-    
+        return output  
+
+class XYPoolingAttention(nn.Module):
+    def __init__(self, c1, c2, k=3):
+        super(XYPoolingAttention, self).__init__()
+        self.x_pool = nn.AdaptiveAvgPool2d((None, 1))  # X Average Pooling: Reduce width (W -> 1)
+        self.y_pool = nn.AdaptiveAvgPool2d((1, None))  # Y Average Pooling: Reduce height (H -> 1))
+        self.conv = nn.Conv1d(in_channels=c1, out_channels=c2, kernel_size=k, padding=(k - 1) // 2, bias=False)  # Convolution to maintain the number of channels
+        self.silu = nn.SiLU()
+        self.sigmoid = nn.Sigmoid()
+
+    def forward(self, x):
+        # X Average Pooling
+        x_pool = self.x_pool(x)         # Output shape: [B, C, H, 1]
+        #x_pool = x_pool.squeeze(-1)     # y: [B, C, H]: 1 x 1024 x 20
+        # Multi-scale information fusion
+        #x_pool = self.conv(x_pool)      # [B, C, H'] 1 x 2048 x 20
+        #x_pool = self.silu(x_pool)
+        #x_pool = self.sigmoid(x_pool)
+        # Restore the shape [B, C, H, 1]
+        #x_pool = x_pool.unsqueeze(-1)   # [B, C, H', 1] 1 x 2048 x 20 x 1
+
+        # Y Average Pooling
+        y_pool = self.y_pool(x)  # Output shape: [B, C, 1, W]
+        #y_pool = y_pool.squeeze(-2)     # y: [B, C, W]: 1 x 1024 x 20
+        
+        # # Multi-scale information fusion
+        #y_pool = self.conv(y_pool)      # [B, C, W'] 1 x 2048 x 20
+        #y_pool = self.silu(y_pool)
+        #y_pool = self.sigmoid(y_pool)
+        
+        # Restore the shape [B, C, 1, W]
+        #y_pool = y_pool.unsqueeze(-2)   # [B, C, 1, W'] 1 x 2048 x 1 x 20
+        
+        return x_pool, y_pool
+        
 class Contigous_Att(nn.Module):    # Input CxHxW
     def __init__(self, c1, c2):
         super().__init__()

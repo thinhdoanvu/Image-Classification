@@ -18,7 +18,7 @@ from ultralytics.nn.modules import (
     
     PositionalEmbedding, MyMSA, MyMLP, Alexnet, MyMHSA, SAM, CAM, CBAM, SEBlock, ECA, TCA, MyAdd, MyClassify, MyClass, Block1, Block21, Block31, Block41, Block51, Block22, Block32, Block42, Block52, Skip, 
     MyMHSA_v2, MyESC, h_sigmoid, h_swish, CoordAtt, MyESCC, MyESC2, MyESC3, C_Attention, H_Attention, W_Attention, HWC, HWC2,
-    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att
+    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att, XYPoolingAttention
     )
 from ultralytics.utils import DEFAULT_CFG_DICT, DEFAULT_CFG_KEYS, LOGGER, colorstr, emojis, yaml_load
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -921,7 +921,7 @@ def parse_model(d, ch, verbose=True):  # model_dict, input_channels(3)
            
         elif m in {MyClassify, MyClass, Block1, Block21, Block31, Block41, Block51, Block22, Block32, Block42, Block52, Skip, 
                     MyMHSA, MyMHSA_v2, MyESC, CoordAtt, MyESCC, MyESC2, MyESC3, H_Attention, W_Attention, HWC, HWC2,
-                    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att
+                    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att, XYPoolingAttention
                 }:
             c1 = args[0]
             c2 = args[1]

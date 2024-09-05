@@ -6,7 +6,7 @@ from .block import (
     PositionalEmbedding, MyMSA, MyMLP, Alexnet, MyMHSA, SAM, CAM, SEBlock, ECA, TCA, MyAdd, 
     MyClassify, MyClass, Block1, Block21, Block31, Block41, Block51, Block22, Block32, Block42, Block52, Skip, MyMHSA_v2, MyESC,
     h_sigmoid, h_swish,CoordAtt, MyESCC, MyESC2, MyESC3, C_Attention, H_Attention, W_Attention, HWC, HWC2,
-    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att
+    SpaceDownS, CBS, ScaleDotProduct, Contigous_Att, XYPoolingAttention
 )
 from .conv import (
     CBAM,
@@ -48,5 +48,5 @@ __all__ = (
     "PositionalEmbedding", "MyMSA", "MyMLP", "Alexnet", "MyMHSA", "SAM", "CAM", "SEBlock", "ECA", "TCA", "MyAdd", 
     "MyClassify", "MyClass", "Block1", "Block21", "Block31", "Block41", "Block51", "Block22", "Block32", "Block42", "Block52", "Skip", "MyMHSA_v2", "MyESC",
     "h_sigmoid", "h_swish","CoordAtt", "MyESCC", "MyESC2", "MyESC3", "C_Attention", "H_Attention", "W_Attention", "HWC", "HWC2",
-    "SpaceDownS", "CBS", "ScaleDotProduct", "Contigous_Att"
+    "SpaceDownS", "CBS", "ScaleDotProduct", "Contigous_Att", "XYPoolingAttention"
 )
