@@ -1,0 +1,49 @@
+# Image size = 640x640x3
+
+# Parameters
+nc: 80  # number of classes
+depth_multiple: 1  # scales module repeats
+width_multiple: 1  # scales convolution channels
+
+# YOLOv8.l backbone
+backbone:
+  # [from, repeats, module, args]
+
+  - [-1, 1, CBS, [3, 64, 3, 2]]                     # 0:        320 x 320 x 64
+
+  - [-1, 1, SpaceDownS, [64, 128]]                  # 1:        160 x 160 x 128
+  - [-1, 1, C2f, [128, True]]                       # 2:        160 x 160 x 128   @1
+  
+  - [-1, 1, SpaceDownS, [128, 256]]                 # 3:        80 x 80 x 256
+  - [-1, 1, C2f, [256, True]]                       # 4:        80 x 80 x 256     @2
+
+  - [-1, 1, SpaceDownS, [256, 512]]                 # 5:        40 x 40 x 512
+  - [-1, 1, C2f, [512, True]]                       # 6:        40 x 40 x 512     @3
+
+  - [-1, 1, SpaceDownS, [512, 1024]]                # 7:        20 x 20 x 1024
+  - [-1, 1, C2f, [1024, True]]                      # 8:        20 x 20 x 1024    @4
+
+  - [-1, 1, SPPF, [1024, 5]]                        # 9:        20 x 20 x 1024    @5
+  
+# YOLOv8.l head
+head:
+  - [-1, 1, nn.Upsample, [None, 2, 'nearest']]      # 10:       40 x 40 x 1024
+  - [6, 1, Contigous_Att, [512, 1024]]              # 11:       40 x 40 x 1024
+  - [[-1, 10], 1, Concat, [1]]                      # 12:       (@2)40 x 40 x 2048
+  - [-1, 1, C2f, [512]]                             # 13:       (C2F) 40 x 40 x 512
+
+  - [-1, 1, nn.Upsample, [None, 2, 'nearest']]      # 14:       80 x 80 x 512
+  - [4, 1, Contigous_Att, [256, 512]]               # 15:       80 x 80 x 512
+  - [[-1, 14], 1, Concat, [1]]                      # 16:       (@1) 80 x 80 x 1024
+  - [-1, 1, C2f, [256]]                             # 17:       80 x 80 x 256
+
+  - [-1, 1, Conv, [256, 3, 2]]                      # 18:       40 x 40 x 256
+  - [[-1, 13], 1, Concat, [1]]                      # 19:       (C2F)40 x 40 x 768
+  - [-1, 1, C2f, [512]]                             # 20:       40 x 40 x 512
+
+  - [-1, 1, Conv, [512, 3, 2]]                      # 21:       20 x 20 x 512
+  - [[-1, 9], 1, Concat, [1]]                       # 22:       (SPPF) 20 x 20 x 1536
+  - [-1, 1, C2f, [1024]]                            # 23:       20 x 20 x 1024
+
+  - [[17, 20, 23], 1, Detect, [nc]]                 # Detect (C2F, C2F, C2F)
+
