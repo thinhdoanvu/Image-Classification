@@ -1,1 +1,3 @@
-
+Edit: C:\Users\csipl\anaconda3\envs\thinhdv\Lib\site-packages\ultralytics\cfg
+Line: 27
+deterministic: False # (bool) whether to enable deterministic mode
