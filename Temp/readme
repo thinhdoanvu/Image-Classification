@@ -1,3 +1,46 @@
-Edit: C:\Users\csipl\anaconda3\envs\thinhdv\Lib\site-packages\ultralytics\cfg
-Line: 27
-deterministic: False # (bool) whether to enable deterministic mode
+# for Hierarchical Scaled dot-product attention for Insect Pest Recognition paper
+#TRUOC HET CAN LUU Y CACH DAT TEN FOLDER DE SAU NAY YOLO TU TIM DUONG DAN DE LUU KET QUA:
+Sau khi gitclone nho doi ten thanh: yolo8, yolo10, yolo11
+
+1./ Tao moi file: Blocks.py trong duong dan: E:\thanh\ntu_group\thinh\ObjectDetection\yolo11\ultralytics\nn
+2./ Import file nay vao tap tin tasks.py
+line 88: from ultralytics.nn.ext.Blocks import *
+
+line 1067: # For my modification -------------------------           
+line 1068: elif m in {C_Attention, H_Attention, W_Attention, Spatial_Attention, CBS, ScaleDotProduct, Contigous_Att}:
+line 1069:	c1 = args[0]
+line 1070:	c2 = args[1]
+line 1071: # ------------------------------------End modify
+line 1072:
+line 1073: else:
+line 1074: 	c2 = ch[f]
+
+# For my modification -------------------------
+elif m in {C_Attention, H_Attention, W_Attention, Spatial_Attention, CBS, ScaleDotProduct, Contigous_Att}:
+	c1 = args[0]
+	c2 = args[1]
+# ------------------------------------End modify
+
+3./ Thiet lap deterministic cua tap tin default.yaml trong duong dan: E:\thanh\ntu_group\thinh\ObjectDetection\yolo11\ultralytics\cfg
+(Neu khong se hien canh bao cho moi epoch rat kho chiu)
+line 27: deterministic: False # (bool) whether to enable deterministic mode
+
+3. Cai dat ultralytics8.3.18 nay cho env thinhdv
+pip install .
+
+4. Tao file config model (hspdal.yaml) trong duong dan: E:\thanh\ntu_group\thinh\ObjectDetection\ultralytics-8.3.18_Y11\ultralytics\cfg\models\hsdpa
+Luu y: voi ultralytic ver 8.3x can co model compound scaling constants: l, m, n
+# Parameters
+nc: 102  # number of classes
+scales: # model compound scaling constants, i.e. 'model=yolo11n.yaml' will call yolo11.yaml with scale 'n'
+  # [depth, width, max_channels]
+  l: [1.00, 1.00, 512] # summary: 631 layers, 25372160 parameters, 25372144 gradients, 87.6 GFLOPs
+
+5. Thuc thi:
+cd ultralytics
+python
+from ultralytics import YOLO
+model=YOLO("./models/newArc_v2.yaml")
+model.train(data="../pest24/pest24.yaml", epochs=200, batch=32, imgsz=640)
+
+
