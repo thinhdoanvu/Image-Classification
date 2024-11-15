@@ -1,0 +1,17 @@
+Provider: Japan Science and Technology Agency
+Database: J-STAGE
+Content:text/plain; charset="utf-8"
+TY  - JOUR
+TI  - Delineating Landslide and Debris Flow Detection in Japan through Aerial Photography: A YOLO v8 Approach to Disaster Management
+TI  -  
+AU  - OPARA,Jonpaul Nnamdi
+AU  - MORIWAKI,Ryo
+AU  - CHUN,Pang-jo
+JO  - Intelligence, Informatics and Infrastructure
+VL  - 5
+IS  - 1
+SP  - 111
+EP  - 123
+PY  - 2024
+DO  - 10.11532/jsceiiai.5.1_111
+ER  - 
