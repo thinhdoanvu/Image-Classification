@@ -12,76 +12,21 @@ Step 2. Create folders:
     |____val2017
     |______images.jpg (all images)
 
+Step 2': Or using another structure
+mmdetection
+    |__data
+    |____annotations
+    |______instances_train2017.json
+    |______instances_val2017.json
+    |______instances_test2017.json
+    |____images
+    |______images.jpg (all images: 18,768 pics)
+    
+
 Step 3. Create config.py inside config folder
     mmdetection
     |__config
     |____config.py
 Copy contents to config.py:
 
-_base_ = 'faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'
 
-train_batch_size_per_gpu = 4 # best timming
-train_num_workers = 4 # suitable for 4090
-
-max_epochs = 6
-stage2_num_epochs = 1
-base_lr = 0.00008
-
-model = dict(
-    roi_head=dict(
-        bbox_head=dict(num_classes=102)
-        # mask_head=dict(num_classes=102) #only for segmentation
-    )
-)
-
-
-dataset_type = 'CocoDataset'
-
-classes = ('rice leaf roller', 'rice leaf caterpillar', 'paddy stem maggot', 'asiatic rice borer', 'yellow rice borer',
-        'rice gall midge', 'Rice Stemfly', 'brown plant hopper', 'white backed plant hopper', 'small brown plant hopper',
-        'rice water weevil', 'rice leafhopper', 'grain spreader thrips', 'rice shell pest', 'grub', 'mole cricket', 'wireworm',
-        'white margined moth', 'black cutworm', 'large cutworm', 'yellow cutworm', 'red spider', 'corn borer', 'army worm', 'aphids',
-        'Potosiabre vitarsis', 'peach borer', 'english grain aphid', 'green bug', 'bird cherry-oataphid', 'wheat blossom midge',
-        'penthaleus major', 'longlegged spider mite', 'wheat phloeothrips', 'wheat sawfly', 'cerodonta denticornis', 'beet fly',
-        'flea beetle', 'cabbage army worm', 'beet army worm', 'Beet spot flies', 'meadow moth', 'beet weevil', 'sericaorient alismots chulsky',
-        'alfalfa weevil', 'flax budworm', 'alfalfa plant bug', 'tarnished plant bug', 'Locustoidea', 'lytta polita', 'legume blister beetle',
-        'blister beetle', 'therioaphis maculata Buckton', 'odontothrips loti', 'Thrips', 'alfalfa seed chalcid', 'Pieris canidia',
-        'Apolygus lucorum', 'Limacodidae', 'Viteus vitifoliae', 'Colomerus vitis', 'Brevipoalpus lewisi McGregor', 'oides decempunctata',
-        'Polyphagotars onemus latus', 'Pseudococcus comstocki Kuwana', 'parathrene regalis', 'Ampelophaga', 'Lycorma delicatula', 'Xylotrechus',
-        'Cicadella viridis', 'Miridae', 'Trialeurodes vaporariorum', 'Erythroneura apicalis', 'Papilio xuthus', 'Panonchus citri McGregor',
-        'Phyllocoptes oleiverus ashmead', 'Icerya purchasi Maskell', 'Unaspis yanonensis', 'Ceroplastes rubens', 'Chrysomphalus aonidum',
-        'Parlatoria zizyphus Lucus', 'Nipaecoccus vastalor', 'Aleurocanthus spiniferus', 'Tetradacus c Bactrocera minax ', 'Dacus dorsalis(Hendel)',
-        'Bactrocera tsuneonis', 'Prodenia litura', 'Adristyrannus', 'Phyllocnistis citrella Stainton', 'Toxoptera citricidus', 'Toxoptera aurantii',
-        'Aphis citricola Vander Goot', 'Scirtothrips dorsalis Hood', 'Dasineura sp', 'Lawana imitata Melichar', 'Salurnis marginella Guerr',
-        'Deporaus marginatus Pascoe', 'Chlumetia transversa', 'Mango flat beak leafhopper', 'Rhytidodera bowrinii white', 'Sternochetus frigidus',
-        'Cicadellidae')
-
-data_root = 'data/coco/'
-
-train_dataloader = dict(
-    batch_size=train_batch_size_per_gpu,
-    num_workers=train_num_workers,
-    dataset=dict(
-        metainfo=dict(classes=classes),
-        data_root=data_root,
-        ann_file='annotations/instances_train2017.json',
-        data_prefix=dict(img='train2017/'),
-        )
-    )
-
-
-val_dataloader = dict(
-    batch_size=train_batch_size_per_gpu,
-    num_workers=train_num_workers,
-    dataset=dict(
-        metainfo=dict(classes=classes),
-        data_root=data_root,
-        ann_file='annotations/instances_val2017.json',
-        data_prefix=dict(img='val2017/'),
-        )
-    )
-
-val_evaluator = dict(ann_file= './data/coco/annotations/instances_val2017.json')
-
-Step 4. Run
-python tools\train.py configs\config.py --work-dir checkpoints
