@@ -1,4 +1,5 @@
-_base_ = 'faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'   #faster-rcnn Resnet: 50
+#_base_ = 'faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'   #faster-rcnn Resnet: 50
+_base_ = 'dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py'   # dynamic-rcnn Resnet: 50
 
 model = dict(
     roi_head=dict(
