@@ -124,7 +124,10 @@ default_hooks = dict(   # save the best model
 train_cfg = dict(max_epochs=100)
 runner = dict(type='EpochBasedRunner', max_epochs=100)
 -------------------------------------------------------------------------------------------------------
-Step 4. Model Complexity
+Step 4. Running
+python tools\train.py configs\fastx_rcnn_r2000.py --work-dir checkpoints
+-------------------------------------------------------------------------------------------------------
+Step 5. Model Complexity
 python tools\analysis_tools\get_flops.py checkpoints\frcnn_ip102\vis_data\config.py
 -------------------------------------------------------------------------------------------------------
 Compute type: dataloader: load a picture from the dataset
