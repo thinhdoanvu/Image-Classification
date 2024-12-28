@@ -1,15 +1,17 @@
-_base_ = 'faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'   #faster-rcnn Resnet: 50
+# _base_ = 'faster_rcnn/faster-rcnn_r50_fpn_1x_coco.py'   # faster-rcnn Resnet: 50
+_base_ = 'dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py'   # dynamic-rcnn Resnet: 50
+
+
+# for faster, dynamic, cascade-rcnn
 
 model = dict(
     roi_head=dict(
         bbox_head=dict(num_classes=16)
-        # mask_head=dict(num_classes=102) #only for segmentation
     )
 )
 
 
 dataset_type = 'CocoDataset'
-
 classes = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15',)
 
 data_root = 'data/coco/'
@@ -64,7 +66,13 @@ val_dataloader = dict(
         )
     )
 
-
+default_hooks = dict(   # save only the best model
+    checkpoint=dict(
+        type="CheckpointHook",
+        save_best="coco/bbox_mAP",
+        rule="greater"
+    )
+)
 
 # Set the maximum number of epochs for training
 train_cfg = dict(max_epochs=100)
