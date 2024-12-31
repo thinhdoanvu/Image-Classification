@@ -1,0 +1,37 @@
+activate thanh-py3.10
+Luu y: test2017 folder inside coco folder (R2000 dataset folder)
+python demo\image_demo.py data\coco\test2017\01_00089_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\02_00061_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\03_00005_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\04_00045_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\05_00008_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\07_00000_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\08_00059_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\11_00101_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\12_00003_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\12_00054_.jpg checkpoints\cascade_r2000\epoch_81.pth
+python demo\image_demo.py data\coco\test2017\13_00006_.jpg checkpoints\cascade_r2000\epoch_81.pth
+
+python demo\image_demo.py data\coco\test2017\01_00089_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\02_00061_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\03_00005_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\04_00045_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\05_00008_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\07_00000_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\08_00059_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\11_00101_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\12_00003_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\12_00054_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+python demo\image_demo.py data\coco\test2017\13_00006_.jpg checkpoints\frcnn_r2000\epoch_98.pth
+
+python demo\image_demo.py data\coco\test2017\01_00089_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\02_00061_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\03_00005_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\04_00045_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\05_00008_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\07_00000_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\08_00059_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\11_00101_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\12_00003_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\12_00054_.jpg checkpoints\cacade_r2000\epoch_58.pth
+python demo\image_demo.py data\coco\test2017\13_00006_.jpg checkpoints\cacade_r2000\epoch_58.pth
