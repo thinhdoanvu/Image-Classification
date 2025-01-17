@@ -185,5 +185,6 @@ if __name__ == "__main__":
                 save(model.state_dict(), f)
             max_acc = val_acc
 
+
 # After training is complete, plot the metrics
 plot_metrics(train_losses, val_losses, train_accuracies, val_accuracies)
