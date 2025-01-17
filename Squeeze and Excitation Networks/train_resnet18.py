@@ -13,6 +13,7 @@ from torchmetrics.functional import accuracy
 from torchvision.transforms import ToTensor, Resize
 import numpy as np
 import os
+import matplotlib.pyplot as plt
 
 # Setup CUDA
 def setup_cuda():
@@ -96,13 +97,44 @@ def validate_model():
     return valid_loss / len(val_loader), val_acc / len(val_loader)
 
 
+# Example plotting function
+
+def plot_metrics(train_losses, val_losses, train_accuracies, val_accuracies):
+    epochs = range(1, len(train_losses) + 1)
+    # Losses
+    plt.figure(figsize=(15, 7))
+    plt.subplot(2, 1, 1)
+    plt.plot(epochs, train_losses, label='Training Loss', color='blue')
+    plt.plot(epochs, val_losses, label='Validation Loss', color='red')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.title('Training and Validation Loss')
+    plt.legend()
+    plt.yscale('log')  # Log scale can help for loss curves with large values
+
+    # Accuracies
+    plt.subplot(2, 1, 2)
+    plt.plot(epochs, train_accuracies, label='Training Accuracy', color='green')
+    plt.plot(epochs, val_accuracies, label='Validation Accuracy', color='orange')
+    plt.xlabel('Epochs')
+    plt.ylabel('Accuracy')
+    plt.title('Training and Validation Accuracy')
+    plt.legend()
+
+    plt.tight_layout()
+    # Save the figure to a file
+    plt.savefig("trainplot.png")  # You can change the file name and format (e.g., .png, .jpg, .pdf)
+
+    plt.show()
+
+
 if __name__ == "__main__":
     device = setup_cuda()
 
     # 1. Load the dataset
     transform = transforms.Compose([Resize((224, 224)), ToTensor()])
-    train_dataset = ImageFolder(root='../data/train', transform=transform)
-    val_dataset = ImageFolder(root='../data/valid', transform=transform)
+    train_dataset = ImageFolder(root='../playcards/train', transform=transform)
+    val_dataset = ImageFolder(root='../playcards/valid', transform=transform)
     # Get class names
     class_names = train_dataset.classes
 
@@ -122,15 +154,23 @@ if __name__ == "__main__":
     loss_fn = torch.nn.CrossEntropyLoss()
 
     # 5. Train the model with 100 epochs
+    # store the metrics for plotting
+    train_losses, val_losses, train_accuracies, val_accuracies = [], [], [], []
+
     max_acc = 0
-    for epoch in range(10):
+    for epoch in range(100):
 
         # 5.1. Train the model over a single epoch
         train_loss, train_acc = train_model()
+        train_losses.append(train_loss)     # save train loss values
+        train_accuracies.append(train_acc)  # save train acc values
 
         # 5.2. Validate the model after training
         val_loss, val_acc = validate_model()
+        val_losses.append(val_loss)         # save val loss values
+        val_accuracies.append(val_acc)      # save val acc values
 
+        print(f'Epoch {epoch}: Train loss = {train_loss}, Train accuracy: {train_acc}')
         print(f'Epoch {epoch}: Validation loss = {val_loss}, Validation accuracy: {val_acc}')
 
         # 4.3. Save the model if the validation accuracy is increasing
@@ -140,7 +180,10 @@ if __name__ == "__main__":
             if not os.path.exists(folder_path):
                 os.makedirs(folder_path)  # Create the folder if it does not exist
             file_path = os.path.join(folder_path,
-                                     'resnet18_epoch_' + str(epoch) + '_acc_{0:.4f}'.format(max_acc) + '.pt')
+                                     'resnet18_epoch_' + str(epoch) + '_acc_{0:.4f}'.format(val_acc) + '.pt')
             with open(file_path, 'wb') as f:
                 save(model.state_dict(), f)
             max_acc = val_acc
+
+# After training is complete, plot the metrics
+plot_metrics(train_losses, val_losses, train_accuracies, val_accuracies)
