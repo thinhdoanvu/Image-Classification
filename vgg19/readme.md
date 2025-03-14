@@ -1,5 +1,5 @@
 # VGG19 origin
-![image]()
+![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg19/trainplot_vgg19.png)
 
 # VGG19 combined with SEBlock
 ![image]()
