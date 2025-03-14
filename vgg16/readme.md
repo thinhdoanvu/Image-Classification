@@ -3,5 +3,5 @@
 # SEBlock combined to Original Model
 ![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg16/trainplot_vgg16se.png)
 # CBAM module combined with VGG16
-
+![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg16/trainplot_cbamvgg16.png)
 # ECA module combined with VGG16
