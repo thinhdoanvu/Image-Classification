@@ -20,7 +20,7 @@ VGG19_CBAM FLOPs totally: 19.716148136 GFLOPs
 ![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg19/trainplot_cbamvgg19.png)
 
 # VGG19 combined with ECA module
-Accuracy validation:   
+Accuracy validation: 89.17%  
 Total Trainable Parameters: 139585368  
 VGG19_ECA FLOPs totally: 19.703793728 GFLOPs  
 
