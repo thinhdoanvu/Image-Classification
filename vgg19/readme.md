@@ -24,7 +24,7 @@ Accuracy validation: 89.17%
 Total Trainable Parameters: 139585368  
 VGG19_ECA FLOPs totally: 19.703793728 GFLOPs  
 
-![image]()
+![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg19/outputs/trainplot_ecavgg19.png)
 
 # VGG19 combined with HAAM module
 Accuracy validation: %  
