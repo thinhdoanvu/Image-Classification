@@ -25,3 +25,10 @@ Total Trainable Parameters: 139585368
 VGG19_ECA FLOPs totally: 19.703793728 GFLOPs  
 
 ![image]()
+
+# VGG19 combined with HAAM module
+Accuracy validation: %  
+Total Trainable Parameters: 139664687  
+VGG19_HAAM FLOPs totally: 19.707240991 GFLOPs 
+
+![image]()
