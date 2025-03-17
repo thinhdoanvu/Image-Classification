@@ -31,4 +31,4 @@ Accuracy validation: %
 Total Trainable Parameters: 139664687  
 VGG19_HAAM FLOPs totally: 19.707240991 GFLOPs 
 
-![image]()
+![image](https://github.com/thinhdoanvu/Image-Classification/blob/main/vgg19/outputs/trainplot_haam_vgg19.png)
