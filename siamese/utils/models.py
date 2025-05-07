@@ -48,7 +48,6 @@ class ResNet18Backbone(nn.Module):
         return x
 
 
-
 class VGG16Backbone(nn.Module):
     def __init__(self, embedding_dim=64):
         super(VGG16Backbone, self).__init__()
