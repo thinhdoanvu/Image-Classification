@@ -82,11 +82,6 @@ class VGG16Backbone(nn.Module):
         return x
 
 
-import torch
-import torch.nn as nn
-from torchvision import models
-
-
 class VGG16Backbone_v2(nn.Module):
     def __init__(self, num_classes=102):
         super(VGG16Backbone_v2, self).__init__()
