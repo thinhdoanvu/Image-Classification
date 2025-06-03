@@ -1,10 +1,13 @@
-_base_ = 'retinanet/retinanet_r50_fpn_1x_coco.py'  # Base configuration
+_base_ = 'retinanet/retinanet_r50_fpn_1x_coco.py'  # retinanet
+#_base_ = 'efficientnet/retinanet_effb3_fpn_8xb4-crop896-1x_coco.py'  # efficientnet
 
 # Training parameters
-train_batch_size_per_gpu = 4  # Optimal for RTX 4090
+train_batch_size_per_gpu = 8  # Optimal for RTX 4090
 train_num_workers = 4
 max_epochs = 100
-base_lr = 0.0001
+base_lr = 0.001
+#base_lr = 0.0001
+#base_lr = 0.00008
 
 # Model configuration
 model = dict(
@@ -48,7 +51,7 @@ train_dataloader = dict(
         metainfo=dict(classes=classes),
         data_root=data_root,
         ann_file='annotations/instances_train2017.json',
-        data_prefix=dict(img='images/')
+        data_prefix=dict(img='train2017')
     )
 )
 
@@ -60,7 +63,7 @@ val_dataloader = dict(
         metainfo=dict(classes=classes),
         data_root=data_root,
         ann_file='annotations/instances_val2017.json',
-        data_prefix=dict(img='images/')
+        data_prefix=dict(img='train2017')
     )
 )
 
