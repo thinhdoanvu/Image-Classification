@@ -1,0 +1,4 @@
+python tools\analysis_tools\benchmark.py configs\efficientnet\retinanet_effb3_fpn_8xb4-crop896-1x_coco.py --checkpoint checkpoints\retina_ip102\epoch_98.pth --task inference --repeat-num 200 --num-warmup 50
+
+
+  
