@@ -3,7 +3,7 @@ _base_ = 'ssd/ssd300_coco.py'  # SSD300 with VGG16 backbone
 
 # for SSD300
 model = dict(
-    bbox_head=dict(
+    bbox_head=dict(    # ssd yeu cau la bbox
         num_classes=16
     )
 )
@@ -41,7 +41,7 @@ train_dataloader = dict(
     persistent_workers=False,
     dataset=dict(
         type='RepeatDataset',
-        times=5,
+        times=5,                # sua cho nay so voi retinanet
         dataset=dict(
             type='CocoDataset',
             test_mode=False,
@@ -85,7 +85,7 @@ runner = dict(type='EpochBasedRunner', max_epochs=100)
 
 # optimizer và scheduler
 optim_wrapper = dict(
-    optimizer=dict(type='SGD', lr=1e-4, momentum=0.9, weight_decay=0.0005)
+    optimizer=dict(type='SGD', lr=1e-4, momentum=0.9, weight_decay=0.0005)  # sua cho nay se khong bi bao loi loss
 )
 
 param_scheduler = [
