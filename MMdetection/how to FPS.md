@@ -56,6 +56,6 @@ python tools\analysis_tools\benchmark.py configs\cascade_rcnn\cascade-rcnn_r50_f
 ```
 python tools\analysis_tools\benchmark.py configs\dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py --checkpoint checkpoints\drcnn_ip102\epoch_22.pth --task inference --repeat-num 1 --num-warmup 1
 ```
-06/04 22:44:33 - mmengine - INFO - Overall fps: 43.4 img/s, times per image: 23.0 ms/img
-06/04 22:44:33 - mmengine - INFO - cuda memory: 171 MB
-06/04 22:44:33 - mmengine - INFO - (GB) mem_used: 17.74 | uss: 1.06 | total_proc: 1
+06/04 22:44:33 - mmengine - INFO - Overall fps: 43.4 img/s, times per image: 23.0 ms/img  
+06/04 22:44:33 - mmengine - INFO - cuda memory: 171 MB  
+06/04 22:44:33 - mmengine - INFO - (GB) mem_used: 17.74 | uss: 1.06 | total_proc: 1  
