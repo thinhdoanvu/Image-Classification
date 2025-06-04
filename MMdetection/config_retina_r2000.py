@@ -3,7 +3,7 @@ _base_ = 'efficientnet/retinanet_effb3_fpn_8xb4-crop896-1x_coco.py'  # efficient
 
 # Training parameters
 train_batch_size_per_gpu = 4  # Optimal for RTX 4090
-train_num_workers = 8
+train_num_workers = 4
 max_epochs = 100
 base_lr = 0.001
 
