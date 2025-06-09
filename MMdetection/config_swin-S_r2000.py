@@ -1,13 +1,17 @@
 '''
-Swin-Tiny	faster_swin_tiny_fpn_1x_16class.py
-Swin-Small	faster_swin_small_fpn_1x_16class.py
-Swin-Base	faster_swin_base_fpn_1x_16class.py
-Swin-Large	faster_swin_large_fpn_1x_16class.py
+Swin-Tiny
+Swin-Small
+Swin-Base
 
 This is Small version
 '''
 _base_ = 'dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py'  # Dùng base schedule, runtime từ dynamic rcnn
 pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_small_patch4_window7_224.pth'
+
+dataset_type = 'CocoDataset'
+classes = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15')
+
+data_root = 'data/coco/'
 
 model = dict(
     backbone=dict(
@@ -32,14 +36,10 @@ model = dict(
         out_channels=256,
         num_outs=5
     ),
-    roi_head=dict(bbox_head=dict(num_classes=16))
+    roi_head=dict(
+        bbox_head=dict(num_classes=len(classes))  # để đếm tự động
+    )
 )
-
-
-dataset_type = 'CocoDataset'
-classes = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15')
-
-data_root = 'data/coco/'
 
 backend_args = None
 train_pipeline = [
