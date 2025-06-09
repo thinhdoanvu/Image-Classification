@@ -44,11 +44,6 @@ model = dict(
     )
 )
 
-dataset_type = 'CocoDataset'
-classes = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15')
-
-data_root = 'data/coco/'
-
 backend_args = None
 train_pipeline = [
     dict(type='LoadImageFromFile', backend_args=backend_args),
