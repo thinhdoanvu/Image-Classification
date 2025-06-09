@@ -1,6 +1,17 @@
-_base_ = 'dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py'  # Dùng base schedule, runtime từ dynamic rcnn
+'''
+Swin-Tiny
+Swin-Small
+Swin-Base
 
+This is Tiny version
+'''
+_base_ = 'dynamic_rcnn/dynamic-rcnn_r50_fpn_1x_coco.py'  # Dùng base schedule, runtime từ dynamic rcnn
 pretrained = 'https://github.com/SwinTransformer/storage/releases/download/v1.0.0/swin_tiny_patch4_window7_224.pth'
+
+dataset_type = 'CocoDataset'
+classes = ('00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15')
+
+data_root = 'data/coco/'
 
 model = dict(
     backbone=dict(
@@ -29,7 +40,7 @@ model = dict(
         num_outs=5
     ),
     roi_head=dict(
-        bbox_head=dict(num_classes=16)
+        bbox_head=dict(num_classes=len(classes))  # để đếm tự động
     )
 )
 
@@ -92,5 +103,5 @@ default_hooks = dict(
     )
 )
 
-train_cfg = dict(max_epochs=100)
-runner = dict(type='EpochBasedRunner', max_epochs=100)
+train_cfg = dict(max_epochs=150)
+runner = dict(type='EpochBasedRunner', max_epochs=150)
