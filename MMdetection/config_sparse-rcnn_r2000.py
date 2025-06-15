@@ -26,7 +26,7 @@ model = dict(
         bbox_head=[
             dict(
                 type='DIIHead',
-                num_classes=16,  # ⚠️ Đây là chỗ bạn thay đổi
+                num_classes=len(classes),  # ⚠️ Đây là chỗ bạn thay đổi
                 loss_cls=dict(
                     type='FocalLoss',
                     use_sigmoid=True,
