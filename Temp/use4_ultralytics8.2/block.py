@@ -1,6 +1,7 @@
 # Ultralytics YOLO 🚀, AGPL-3.0 license
 """
 Thinh DV 3 Sept 2024
+C:\Users\csipl\anaconda3\envs\thinhdv\Lib\site-packages\ultralytics\nn\ext\blocks.py
 """
 import torch
 import torch.nn as nn
