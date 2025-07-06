@@ -115,5 +115,24 @@ if __name__ == '__main__':
 #### RUN 1 image
 # python demo\image_demo_thinh.py data\coco\test2017\00_00003_.jpg checkpoints\frcnn_r2000\vis_data\config.py --weights checkpoints\frcnn_r2000\epoch_98.pth --out-dir pred_fasterRCNN --num-classes 16
 
-#### RUN folder
-# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\frcnn_r2000\vis_data\config.py --weights checkpoints\frcnn_r2000\epoch_98.pth --out-dir pred_fasterRCNN --num-classes 16
+#### RUN folder R2000
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\frcnn_r2000\vis_data\config.py --weights checkpoints\frcnn_r2000\epoch_98.pth --out-dir pred_fasterRCNN_R2000 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\cascade_r2000\vis_data\config.py --weights checkpoints\cascade_r2000\epoch_81.pth --out-dir pred_cascadeRCNN_R2000 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\drcnn_r2000\vis_data\config.py --weights checkpoints\drcnn_r2000\epoch_58.pth --out-dir pred_dynamicRCNN_R2000 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\fcos_r2000\vis_data\config.py --weights checkpoints\fcos_r2000\epoch_208.pth --out-dir pred_fcos_R2000 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\retina_r2000\vis_data\config.py --weights checkpoints\retina_r2000\epoch_85.pth --out-dir pred_retina_R2000 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\sparse_rcnn_r200\vis_data\config.py --weights checkpoints\sparse_rcnn_r200\epoch_29.pth --out-dir pred_sparseRCNN_R200 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-B_r2000\vis_data\config.py --weights checkpoints\swin-B_r2000\epoch_75.pth --out-dir pred_swin-B_R200 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-S_r2000\vis_data\config.py --weights checkpoints\swin-S_r2000\epoch_147.pth --out-dir pred_swin-S_R200 --num-classes 16
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-T_r2000\vis_data\config.py --weights checkpoints\swin-T_r2000\epoch_96.pth --out-dir pred_swin-T_R200 --num-classes 16
+
+#### RUN folder IP102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\frcnn_ip102\vis_data\config.py --weights checkpoints\frcnn_ip102\epoch_82.pth --out-dir pred_fasterRCNN_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\cascade_ip102\vis_data\config.py --weights checkpoints\cascade_ip102\epoch_46.pth --out-dir pred_cascadeRCNN_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\drcnn_ip102\vis_data\config.py --weights checkpoints\drcnn_ip102\epoch_22.pth --out-dir pred_dynamicRCNN_IP102 --num-classes 1102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\fcos_ip102\vis_data\config.py --weights checkpoints\fcos_ip102\epoch_72.pth --out-dir pred_fcos_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\retina_ip102\vis_data\config.py --weights checkpoints\retina_ip102\epoch_98.pth --out-dir pred_retina_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\sparse_rcnn_ip102\vis_data\config.py --weights checkpoints\sparse_rcnn_ip102\epoch_12.pth --out-dir pred_sparseRCNN_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-B_ip102\vis_data\config.py --weights checkpoints\swin-B_ip102\epoch_84.pth --out-dir pred_swin-B_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-S_ip102\vis_data\config.py --weights checkpoints\swin-S_ip102\epoch_59.pth --out-dir pred_swin-S_IP102 --num-classes 102
+# python demo\image_demo_thinh.py data\coco\test2017 checkpoints\swin-T_ip102\vis_data\config.py --weights checkpoints\swin-T_ip102\epoch_29.pth --out-dir pred_swin-T_IP102 --num-classes 102
