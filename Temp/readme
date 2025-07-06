@@ -40,7 +40,6 @@ scales: # model compound scaling constants, i.e. 'model=yolo11n.yaml' will call 
 cd ultralytics
 python
 from ultralytics import YOLO
-model=YOLO("./models/newArc_v2.yaml")
-model.train(data="../pest24/pest24.yaml", epochs=200, batch=32, imgsz=640)
-
+model=YOLO("./cfg/models/hsdpa/Final_v2_guipaper.yaml")
+model.train(data="../../datasets/ip102/ip102.yaml", epochs=200, batch=32, imgsz=640)
 
