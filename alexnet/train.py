@@ -1,138 +1,128 @@
-# Import dependencies
-import torch
-from torchvision import datasets
-from tqdm import tqdm
-from torch import nn, save, load
-from torch.optim import Adam
-from torch.utils.data import Dataset, DataLoader
-from torchvision.datasets import ImageFolder
-import torchvision.transforms as transforms
-from torchvision.transforms import ToTensor, Resize
-import numpy as np
+# train.py
 import os
-from PIL import Image
+import random
+import numpy as np
+import matplotlib.pyplot as plt
+import torch
+from torch import nn
+from torch.optim import Adam
+from torch.utils.data import DataLoader
+from torchvision import transforms
+from torchvision.transforms import Resize, ToTensor
+from tqdm.auto import tqdm
+from sklearn.metrics import confusion_matrix, classification_report, ConfusionMatrixDisplay
 
-############################Definine Functions##########################
-train_data = '../dataset/train'
-valid_data = '../dataset/valid'
+# -------------------- Configuration --------------------
+train_data = "../dataset/train"
+valid_data = "../dataset/valid"
 n_epoch = 100
+batch_size = 32
+learning_rate = 1e-3
+seed = 50
+
+output_dir = "results"
+checkpoint_dir = "checkpoint"
+os.makedirs(output_dir, exist_ok=True)
+os.makedirs(checkpoint_dir, exist_ok=True)
 
 
-# Setup CUDA
-def setup_cuda():
-    # Setting seeds for reproducibility
-    seed = 50
-    torch.backends.cudnn.enabled = True
-    torch.backends.cudnn.benchmark = True
+def setup_cuda(seed=50):
+    random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
     if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
+        torch.cuda.manual_seed_all(seed)
+    # benchmark can help fixed-size images; deterministic behavior may be reduced.
+    torch.backends.cudnn.benchmark = torch.cuda.is_available()
+    return torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    return torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
-def train_model():
-    """
-    Train the model over a single epoch
-    :return: training loss and segmentation performance
-    """
-    train_loss = 0.0
-    clf.train()
+def run_train_epoch(model, loader, optimizer, loss_fn, device):
+    model.train()
+    total_loss = 0.0
+    total_correct = 0
+    total_samples = 0
 
-    for batch in tqdm(train_loader, ncols=80, desc='Training'):
-        # Set the gradients to zero before starting backpropagation
-        optimizer.zero_grad()
+    pbar = tqdm(loader, desc="Train", ncols=100, leave=False)
+    for images, labels in pbar:
+        images = images.to(device)
+        labels = labels.to(device)
 
-        # Get a batch
-        X, y = batch  # X: train, y = label
-        X, y = X.to(device), y.to(device)
-
-        # Perform a feed-forward pass
-        logits = clf(X)  # yhat = predict
-
-        # Compute the batch loss
-        loss = loss_fn(logits, y)  # y:label
-
-        # Compute gradient of the loss fn w.r.t the trainable weights
+        optimizer.zero_grad(set_to_none=True)
+        logits = model(images)
+        loss = loss_fn(logits, labels)
         loss.backward()
-
-        # Update the trainable weights
         optimizer.step()
 
-        # Accumulate the batch loss
-        train_loss += loss.item()#tinh loss cho tat ca cac batch
+        batch_size_now = labels.size(0)
+        total_loss += loss.item() * batch_size_now
+        predictions = logits.argmax(dim=1)
+        total_correct += (predictions == labels).sum().item()
+        total_samples += batch_size_now
 
-    return train_loss/ len(train_loader)
+        pbar.set_postfix(
+            loss=f"{total_loss / total_samples:.4f}",
+            acc=f"{100 * total_correct / total_samples:.2f}%"
+        )
 
-
-def validate_model():
-    """
-    Validate the model over a single epoch
-    :return: validation loss and segmentation performance
-    """
-    clf.eval()
-    valid_loss = 0.0
-
-    with torch.no_grad():
-        for batch in tqdm(valid_loader, ncols=80, desc='Valid'):  # valid_loader
-
-            # Get a batch
-            X, y = batch  # X: train, y = label
-            X, y = X.to(device), y.to(device)
-
-            # Perform a feed-forward pass
-            logits = clf(X)  # yhat = predict
-
-            # Compute the batch loss
-            loss = loss_fn(logits, y)  # y:label
-
-            # Accumulate the batch loss
-            valid_loss += loss.item()#tinh loss cho tat ca cac batch
-
-        return valid_loss/ len(valid_loader)
+    return total_loss / total_samples, total_correct / total_samples
 
 
-if __name__ == "__main__":
-    device = setup_cuda()
+@torch.no_grad()
+def evaluate(model, loader, loss_fn, device, desc="Valid"):
+    model.eval()
+    total_loss = 0.0
+    total_correct = 0
+    total_samples = 0
+    all_labels = []
+    all_predictions = []
 
-    # 1. Load the dataset
-    from utils.getdataset import Getdataset
+    pbar = tqdm(loader, desc=desc, ncols=100, leave=False)
+    for images, labels in pbar:
+        images = images.to(device)
+        labels = labels.to(device)
 
-    transform = transforms.Compose([Resize((224, 224)), ToTensor()])
-    train_dataset = Getdataset(train_data, transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-    valid_dataset = Getdataset(valid_data, transform=transform)
-    valid_loader = DataLoader(valid_dataset, batch_size=32, shuffle=True)
+        logits = model(images)
+        loss = loss_fn(logits, labels)
+        predictions = logits.argmax(dim=1)
 
-    # 2. Create a segmentation model
-    num_class=53
+        batch_size_now = labels.size(0)
+        total_loss += loss.item() * batch_size_now
+        total_correct += (predictions == labels).sum().item()
+        total_samples += batch_size_now
 
-    #without pretrain weight
-    from utils.alexnetmodel import ImageClassifier
-    clf = ImageClassifier(num_class).to(device)
+        all_labels.extend(labels.cpu().numpy().tolist())
+        all_predictions.extend(predictions.cpu().numpy().tolist())
 
-    # 3. Specify loss function and optimizer
-    optimizer = Adam(clf.parameters(), lr=1e-3)
-    loss_fn = nn.CrossEntropyLoss()
+        pbar.set_postfix(
+            loss=f"{total_loss / total_samples:.4f}",
+            acc=f"{100 * total_correct / total_samples:.2f}%"
+        )
 
-    # 4. Training flow
-    max_err = 100
-    for epoch in range(n_epoch):  # train for n_epoch
-        # 5.1. Train the model over a single epoch
-        train_err = train_model()
+    return (
+        total_loss / total_samples,
+        total_correct / total_samples,
+        np.array(all_labels),
+        np.array(all_predictions),
+    )
 
-        # 5.2. Validate the model
-        valid_err = validate_model()
 
-        print("\nEpoch:{} training loss is {:.4f}".format(epoch, train_err))
-        print("Epoch:{} valid loss is {:.4f}".format(epoch, valid_err))
+def save_training_plots(history, output_dir):
+    epochs = range(1, len(history["train_loss"]) + 1)
 
-        folder_path = 'checkpoint'  # Define the folder name
-        if not os.path.exists(folder_path):
-            os.makedirs(folder_path)  # Create the folder if it does not exist
+    # Loss plot
+    plt.figure(figsize=(8, 5))
+    plt.plot(epochs, history["train_loss"], label="Train loss")
+    plt.plot(epochs, history["valid_loss"], label="Validation loss")
+    plt.xlabel("Epoch")
+    plt.ylabel("Loss")
+    plt.title("Training and Validation Loss")
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.savefig(os.path.join(output_dir, "loss_curve.png"), dpi=200)
+    plt.show()
+    plt.close()
 
-        if valid_err < max_err:
-            file_path = os.path.join(folder_path,'alexmodel_weight' + '.pt')
-            with open(file_path, 'wb') as f:
-                save(clf.state_dict(), f)
-                max_err = valid_err
+    # Accuracy plot
+    plt.figure(figsize=(8, 5))
