@@ -1,112 +1,112 @@
+# predict.py
 import os
-from PIL import Image, ImageDraw, ImageFont
+import csv
 import torch
-from torchvision.transforms import ToTensor
-import torchvision.models as models
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import torchvision.transforms
+import torch.nn.functional as F
+from PIL import Image, ImageDraw, ImageFont
+from torchvision import transforms
+from torchvision.transforms import Resize, ToTensor
+
+# -------------------- Configuration --------------------
+input_dir = "/kaggle/input/datasets/thnhonv/catdog/dataset/predict"                                   # ảnh cần dự đoán
+output_dir = "inference"                                # kết quả
+checkpoint_path = os.path.join("checkpoint", "alexmodel_best.pt")
+image_size = 224
+image_exts = (".jpg", ".jpeg", ".png", ".bmp", ".webp")
+
+# Phải giống hệt transform lúc train
+transform = transforms.Compose([
+    Resize((image_size, image_size)),
+    ToTensor(),
+])
 
 
-def setup_cuda():
-    # Setting seeds for reproducibility
-    seed = 50
-    torch.backends.cudnn.enabled = True
-    torch.backends.cudnn.benchmark = True
-    np.random.seed(seed)
-    torch.manual_seed(seed)
-    if torch.cuda.is_available():
-        torch.cuda.manual_seed(seed)
-
-    return torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-
-
-def get_num_classes_from_csv(csv_file_path):
-    # Đọc file CSV vào DataFrame
-    df = pd.read_csv(csv_file_path)
-
-    # Đếm số lớp duy nhất trong cột nhãn
-    num_classes = df['labels'].nunique()
-
-    return num_classes
+def get_font(img_width):
+    """Chọn cỡ chữ theo kích thước ảnh; dùng font có sẵn trên Kaggle/Linux."""
+    size = max(14, img_width // 25)
+    for name in ("DejaVuSans-Bold.ttf", "DejaVuSans.ttf", "arial.ttf"):
+        try:
+            return ImageFont.truetype(name, size)
+        except OSError:
+            continue
+    try:
+        return ImageFont.load_default(size=size)   # Pillow >= 10.1
+    except TypeError:
+        return ImageFont.load_default()
 
 
-def predict():
-    clf.eval()
+def draw_label(img, text):
+    """Vẽ chữ trên một nền đen bán trong suốt ở góc trên bên trái ảnh."""
+    img = img.convert("RGBA")
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+    font = get_font(img.width)
 
-    df = pd.read_csv(csv_file_path)
+    pad = max(4, img.width // 100)
+    left, top, right, bottom = draw.textbbox((pad, pad), text, font=font)
+    draw.rectangle(
+        (left - pad, top - pad, right + pad, bottom + pad),
+        fill=(0, 0, 0, 160),
+    )
+    draw.text((pad, pad), text, font=font, fill=(255, 255, 0, 255))
 
-    # Get the list of image files in the test folder
-    image_files = [file for file in os.listdir(folder_path) if file.endswith('.jpg')]
-    # print(image_files)
+    return Image.alpha_composite(img, overlay).convert("RGB")
 
-    # Iterate over each image file in the test folder
-    for image_file in image_files:
-        # Process each image file here
-        image_path = os.path.join(folder_path, image_file)  # Construct the full path to the image file
-        img = Image.open(image_path)
-        plt.imshow(img)
-        plt.show()
-        # resize img
-        img = torchvision.transforms.Resize((224, 224),
-                                            interpolation=torchvision.transforms.InterpolationMode.BILINEAR)(img)
-        img_tensor = ToTensor()(img).unsqueeze(0).to(device)
 
-        output = clf(img_tensor)
-        predicted_class = torch.argmax(output).item()
-        # print(predicted_class)
-
-        # Search for matching rows based on the image file name
-        rows = df[df['filepaths'].str.endswith(image_file)]
-        if not rows.empty:
-            match_found = False
-            for index, row in rows.iterrows():
-                index_class = row['class_index']
-                label = row['labels']
-                if predicted_class == index_class:
-                    print(f"Image: {image_file}, Predicted label: {label}")
-
-                    # Draw the predicted label on the image
-                    draw = ImageDraw.Draw(img)
-                    font = ImageFont.truetype("arial.ttf", 15)
-                    text_color = (0, 0, 255)  # blue
-                    draw.text((10, 10), f"Predicted label: {label}", (0, 0, 255), font=font)
-
-                    # Save the annotated image with the predicted label as the filename
-                    output_folder = 'outputs'
-                    os.makedirs(output_folder, exist_ok=True)
-                    output_path = os.path.join(output_folder, f"{label}_{image_file}")
-                    img.save(output_path)
-
-                    match_found = True
-                    break
-            if not match_found:
-                print(
-                    f"Image: {image_file}, Predicted class index: {predicted_class}, Index class from CSV: {index_class}")
-        else:
-            print(f"No match found for image: {image_file}")
+@torch.no_grad()
+def predict_image(model, img, class_names, device):
+    x = transform(img).unsqueeze(0).to(device)
+    probs = F.softmax(model(x), dim=1)[0]
+    conf, idx = probs.max(dim=0)
+    return class_names[idx.item()], conf.item(), probs.cpu().tolist()
 
 
 if __name__ == "__main__":
-    device = setup_cuda()
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print("Device:", device)
 
-    folder_path = '../dataset/test/ace_of_clubs/'
-    csv_file_path = '../dataset/dataset.csv'  # path to your CSV file
+    from utils.alexnetmodel import Alexnet
 
-    # Xác định số lớp từ file CSV
-    num_classes = get_num_classes_from_csv(csv_file_path)
-    print("number of classes:", num_classes)
+    # Load checkpoint đã lưu trong train.py (gồm cả class_names)
+    checkpoint = torch.load(checkpoint_path, map_location=device)
+    class_names = checkpoint["class_names"]
+    model = Alexnet(len(class_names)).to(device)
+    model.load_state_dict(checkpoint["model_state_dict"])
+    model.eval()
+    print(
+        f"Loaded checkpoint (epoch {checkpoint['epoch']}, "
+        f"valid acc {checkpoint['valid_accuracy'] * 100:.2f}%)"
+    )
+    print("Classes:", class_names)
 
-    # 2. Create a segmentation model, then load the trained weights
-    from utils.alexnetmodel import ImageClassifier
+    os.makedirs(output_dir, exist_ok=True)
+    image_files = sorted(
+        f for f in os.listdir(input_dir) if f.lower().endswith(image_exts)
+    )
+    if not image_files:
+        raise FileNotFoundError(f"Không tìm thấy ảnh nào trong '{input_dir}/'")
+    print(f"Found {len(image_files)} images in '{input_dir}/'\n")
 
-    clf = ImageClassifier(num_classes).to(device)
+    rows = []
+    for file_name in image_files:
+        img = Image.open(os.path.join(input_dir, file_name)).convert("RGB")
 
-    folder_checkpoint = 'checkpoint'  # Define the folder name
-    file_checkpoint = os.path.join(folder_checkpoint, 'alexmodel_weight.pt')
-    clf.load_state_dict(torch.load(file_checkpoint, device))
-    print('The classify model has been loaded.')
+        label, conf, probs = predict_image(model, img, class_names, device)
+        print(f"{file_name:<30} -> {label} ({conf * 100:.2f}%)")
 
-    # 3. Perform segmentation
-    predict()
+        # Vẽ lên ảnh gốc (kích thước gốc), không phải ảnh đã resize
+        annotated = draw_label(img, f"{label}: {conf * 100:.2f}%")
+        stem = os.path.splitext(file_name)[0]
+        annotated.save(os.path.join(output_dir, f"{stem}_pred_{label}.jpg"), quality=95)
+
+        rows.append([file_name, label, f"{conf:.4f}"] + [f"{p:.4f}" for p in probs])
+
+    # Lưu bảng tổng hợp kết quả
+    csv_path = os.path.join(output_dir, "predictions.csv")
+    with open(csv_path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.writer(f)
+        writer.writerow(["image", "predicted_class", "confidence"]
+                        + [f"prob_{c}" for c in class_names])
+        writer.writerows(rows)
+
+    print(f"\nAnnotated images and predictions.csv saved in: {output_dir}/")
