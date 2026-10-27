@@ -208,13 +208,12 @@ if __name__ == "__main__":
 
     train_loader = DataLoader(
         train_dataset, batch_size=batch_size, shuffle=True,
-        num_workers=2, pin_memory=(device.type == "cuda")
+        num_workers=0, pin_memory=(device.type == "cuda")
     )
     valid_loader = DataLoader(
         valid_dataset, batch_size=batch_size, shuffle=False,
-        num_workers=2, pin_memory=(device.type == "cuda")
+        num_workers=0, pin_memory=(device.type == "cuda")
     )
-
 
     model = Alexnet(num_class).to(device)
     loss_fn = nn.CrossEntropyLoss()
@@ -229,6 +228,7 @@ if __name__ == "__main__":
     best_valid_loss = float("inf")
     best_path = os.path.join(checkpoint_dir, "alexmodel_best.pt")
 
+    # -------------------- Training loop --------------------
     for epoch in range(n_epoch):
         print(f"\nEpoch {epoch + 1}/{n_epoch}")
 
@@ -267,8 +267,9 @@ if __name__ == "__main__":
             )
             print(f"Saved best checkpoint: {best_path}")
 
-        # Update learning curves as training proceeds.
-        save_training_plots(history, output_dir)
+    # -------------------- After training --------------------
+    # Plot learning curves once, after all epochs are finished.
+    save_training_plots(history, output_dir)
 
     # Load best checkpoint and produce final validation metrics.
     checkpoint = torch.load(best_path, map_location=device)
