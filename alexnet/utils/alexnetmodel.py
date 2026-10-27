@@ -1,7 +1,7 @@
 from torch import nn
 
 # Image Classifier Neural Network
-class ImageClassifier(nn.Module):
+class Alexnet(nn.Module):
     def __init__(self,num_class):
         super().__init__()
         self.model = nn.Sequential(
